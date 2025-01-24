@@ -46,10 +46,18 @@ appropriately.
 See http://code.google.com/p/jsonrpclib/ for more info.
 """
 
-from xmlrpc.client import Transport as XMLTransport
-from xmlrpc.client import SafeTransport as XMLSafeTransport
-from xmlrpc.client import ServerProxy as XMLServerProxy
-from xmlrpc.client import _Method as XML_Method
+try:
+    from xmlrpc.client import Transport as XMLTransport
+    from xmlrpc.client import SafeTransport as XMLSafeTransport
+    from xmlrpc.client import ServerProxy as XMLServerProxy
+    from xmlrpc.client import _Method as XML_Method
+except ImportError:
+    # py2
+    from xmlrpclib import Transport as XMLTransport
+    from xmlrpclib import SafeTransport as XMLSafeTransport
+    from xmlrpclib import ServerProxy as XMLServerProxy
+    from xmlrpclib import _Method as XML_Method
+
 import json
 import string
 import random
@@ -57,7 +65,12 @@ import random
 from jsonrpclib import Config
 from jsonrpclib import History
 
-from http.client import HTTPConnection
+try:
+    from http.client import HTTPConnection
+except ImportError:
+    # py2
+    from httplib import HTTPConnection
+
 from socket import socket
 
 USE_UNIX_SOCKETS = False
@@ -176,7 +189,7 @@ class ServerProxy(XMLServerProxy):
         try:
             from urllib.parse import splittype, splithost  # python 3.x
         except ImportError:
-            from urllib.parse import splittype, splithost
+            from urllib import splittype, splithost  # python 2.x
         if not version:
             version = Config.instance().version
         self.__version = version

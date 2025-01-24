@@ -5,7 +5,10 @@ from jsonrpclib import config
 
 iter_types = (dict, list, tuple)
 value_types = (bool, )
-string_types = (str, )
+try:
+    string_types = (str, unicode)
+except NameError:
+    string_types = (str, )  # py3
 numeric_types = (int, float)
 
 supported_types = iter_types+string_types+numeric_types+value_types
